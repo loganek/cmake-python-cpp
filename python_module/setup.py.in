@@ -1,0 +1,26 @@
+import sys
+from distutils.core import setup, Extension
+
+def read_parameters(argument_name):
+    out_list = []
+    try:
+        while True:
+            argument_idx = sys.argv.index(argument_name)
+            out_list.append(sys.argv.pop(argument_idx + 1))
+            sys.argv.pop(argument_idx)
+    except ValueError:
+        pass
+    finally:
+        return out_list
+
+module = Extension('foobar',
+                    sources = read_parameters("--source-files"),
+                    libraries = read_parameters("--libraries"),
+                    library_dirs = read_parameters("--lib-dirs"),
+                    include_dirs = read_parameters("--include-dirs"),
+                    runtime_library_dirs = ['@CMAKE_INSTALL_PREFIX@/lib'])
+
+setup(name = 'foobar',
+      version = '@PROJECT_VERSION@',
+      description = 'foobar module',
+      ext_modules = [module])
